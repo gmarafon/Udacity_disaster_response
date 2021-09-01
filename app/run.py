@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 #from sklearn.externals import joblib #deprecated, using joblib directly instead
 import joblib
 from sqlalchemy import create_engine
+from app import app
 
 
 app = Flask(__name__)
