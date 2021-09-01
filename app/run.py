@@ -1,3 +1,5 @@
+from app import app
+
 import json
 import plotly
 import pandas as pd
@@ -12,10 +14,8 @@ import plotly.graph_objects as go
 #from sklearn.externals import joblib #deprecated, using joblib directly instead
 import joblib
 from sqlalchemy import create_engine
-from app import app
 
-
-app = Flask(__name__)
+#app = Flask(__name__)
 
 def tokenize(text):
     tokens = word_tokenize(text)
