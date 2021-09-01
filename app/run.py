@@ -8,7 +8,9 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+import plotly.graph_objects as go
+#from sklearn.externals import joblib #deprecated, using joblib directly instead
+import joblib
 from sqlalchemy import create_engine
 
 
@@ -26,11 +28,11 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///data/DisasterResponse.db')
+df = pd.read_sql_table('categories', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("models/xgboost.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,10 +44,85 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    df_categories = df.drop(columns=['message', 'original', 'genre', 'id']).sum().sort_values(ascending=False)
+    df_categories.name = 'Total'
+    categories_counts = df_categories.values
+    categories_names = df_categories.index
+
+    df_genre_categories = df.drop(columns=['id']).groupby('genre').sum()
+    df_genre_categories = df_genre_categories.append(df_categories)
+    df_genre_categories.sort_values('Total', axis=1, ascending=False, inplace=True)
+    df_direct = df_genre_categories.loc['direct'].values
+    df_news = df_genre_categories.loc['news'].values
+    df_social = df_genre_categories.loc['social'].values
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=df_news,
+                    marker=dict(color='rgb(85,201,159)'),
+                    name='News'
+                ),
+                Bar(
+                    x=categories_names,
+                    y=df_direct,
+                    marker=dict(color='rgb(161, 204, 230)'),
+                    name='Direct'
+                ),
+                Bar(
+                    x=categories_names,
+                    y=df_social,
+                    marker=dict(color='rgb(245, 184, 162)'),
+                    name='Social'
+                )
+            ],
+
+            'layout': {
+                'title': 'Message Categories per Genre',
+                'yaxis': {
+                    'title': "Count",
+                    'showgrid' : False                
+                },
+                'xaxis': {
+                    'title': "Categories",
+                    'tickangle' : -45,
+                    'automargin' : True                       
+                },
+                'barmode' : 'stack'
+                
+                
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=categories_counts,
+                    marker=dict(color='rgb(85,201,159)'),
+                    hoverinfo = None
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message Categories',
+                'yaxis': {
+                    'title': "Count",
+                    'showgrid' : False                
+                },
+                'xaxis': {
+                    'title': "Categories",
+                    'tickangle' : -45,
+                    'automargin' : True
+                                        
+                }
+                
+                
+            }
+        },
         {
             'data': [
                 Bar(
@@ -65,6 +142,7 @@ def index():
             }
         }
     ]
+    
     
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
