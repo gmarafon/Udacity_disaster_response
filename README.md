@@ -31,6 +31,11 @@ Then it cleans the dataframe separating the categories column hot encoding them 
 
 Finally it saves the dataframe into a SQLite database.
 
+To run locally:
+```
+python data/process_data.py data/massages.csv data/categories.csv "Databasename"
+```
+
 ## Machine Learning Pipeline
 This file load the data from the database create in the ETL phase and then build a model to predict the categories of the messages.
 
@@ -43,12 +48,22 @@ All of this is wrapped in a Pipeline object to better control the ML pipeline.
 Lastly the model is saved into the pickle file. Originally this was done inside the train_classifer.py but due some problems with custom modules when saving the pickle file,
 it was necessary to dump the pickle from another file. More details in this [stackoverflow article](https://stackoverflow.com/questions/49621169/joblib-load-main-attributeerror)
 
+To run locally:
+```
+python models/pickle_dump.py "Databasename" "Picklename" 
+```
+
 ## Flask APP
 The app structure is provided from Udacity and some minor modifications were made.
 
 Both the model pickle file and the database file were uploaded into the app to create more charts and to utilize the "searchbar" to classify any inputed messages.
 
 This app is hosted online, you can access it [here](https://disaster-recovery-gmarafon.herokuapp.com/)
+
+To run locally:
+```
+python disaster_recovery.py 
+```
 
 ![Home](images/Charts.png)
 ![Classifier](images/Classifier.png)
