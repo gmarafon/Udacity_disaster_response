@@ -40,14 +40,15 @@ Since there are several target variables (categories) I used the MultiOutputClas
 
 All of this is wrapped in a Pipeline object to better control the ML pipeline.
 
-Lastly the model is saved into a pickle file.
+Lastly the model is saved into the pickle file. Originally this was done inside the train_classifer.py but due some problems with custom modules when saving the pickle file,
+it was necessary to dump the pickle from another file. More details in this [stackoverflow article](https://stackoverflow.com/questions/49621169/joblib-load-main-attributeerror)
 
 ## Flask APP
 The app structure is provided from Udacity and some minor modifications were made.
 
 Both the model pickle file and the database file were uploaded into the app to create more charts and to utilize the "searchbar" to classify any inputed messages.
 
-This app is hosted online, you can access it [here]()
+This app is hosted online, you can access it [here](https://disaster-recovery-gmarafon.herokuapp.com/)
 
 ![Home](images/Charts.png)
 ![Classifier](images/Classifier.png)

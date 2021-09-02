@@ -135,8 +135,10 @@ def main():
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
 
-        print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model, model_filepath)
+        #commented out due to problem with custom models when saving pickle file
+        #the pickle dumping was moved to pickle_dump.py. more info in the README
+        #print('Saving model...\n    MODEL: {}'.format(model_filepath))
+        #save_model(model, model_filepath)
 
         print('Trained model saved!')
 
