@@ -26,7 +26,7 @@ def clean_data(df):
     '''
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';', expand=True)
-    names = categories.iloc[0,:].str[:-2].to_list()
+    names = list(categories.iloc[0,:].str[:-2])
     categories.columns = names
     categories = categories.apply(lambda x: x.str[-1], axis=1)
     categories = categories.apply(pd.to_numeric, axis=1)
